@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>На тарелке</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      background: var(--tg-theme-bg-color, #ffffff);
+      color: var(--tg-theme-text-color, #000000);
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: var(--tg-theme-button-color, #3390ff);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>🍽 На тарелке</h2>
+  <p>Выберите действие:</p>
+
+  <button onclick="showMenu()">Заказать из меню</button>
+  <button onclick="startQuiz()">Подобрать питание</button>
+
+  <div id="menu" style="display:none;">
+    <h3>🥗 Меню дня</h3>
+    <button onclick="order('Куриная грудка')">Куриная грудка — 350 ₽</button>
+    <button onclick="order('Лосось с киноа')">Лосось с киноа — 450 ₽</button>
+    <button onclick="order('Веганский бургер')">Веганский бургер — 300 ₽</button>
+  </div>
+
+  <div id="quiz" style="display:none;">
+    <h3>📋 Анкета</h3>
+    <p>Есть ли аллергии?</p>
+    <input type="text" id="allergy" placeholder="Например: лактоза">
+    <p>Цель?</p>
+    <select id="goal">
+      <option>Похудеть</option>
+      <option>Набрать мышцы</option>
+      <option>Поддерживать форму</option>
+    </select>
+    <button onclick="submitQuiz()">Готово</button>
+  </div>
+
+  <script>
+    function showMenu() {
+      document.getElementById('menu').style.display = 'block';
+      document.getElementById('quiz').style.display = 'none';
+    }
+
+    function startQuiz() {
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('menu').style.display = 'none';
+    }
+
+    function order(dish) {
+      Telegram.WebApp.sendData(JSON.stringify({ action: "order", dish: dish }));
+      Telegram.WebApp.close();
+    }
+
+    function submitQuiz() {
+      const allergy = document.getElementById('allergy').value || 'нет';
+      const goal = document.getElementById('goal').value;
+      Telegram.WebApp.sendData(JSON.stringify({ 
+        action: "quiz", 
+        allergy: allergy, 
+        goal: goal 
+      }));
+      Telegram.WebApp.close();
+    }
+
+    Telegram.WebApp.ready();
+  </script>
+</body>
+</html>
