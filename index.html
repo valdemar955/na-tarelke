@@ -26,10 +26,18 @@
     }
     input, select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border: 1px solid var(--tg-theme-hint-color, #ccc);
+      border-radius: 6px;
+      background: var(--tg-theme-bg-color, #fff);
+      color: var(--tg-theme-text-color, #000);
+    }
+    h2, h3 {
+      margin-top: 20px;
+    }
+    #menu, #quiz {
+      display: none;
     }
   </style>
 </head>
@@ -40,18 +48,18 @@
   <button onclick="showMenu()">Заказать из меню</button>
   <button onclick="startQuiz()">Подобрать питание</button>
 
-  <div id="menu" style="display:none;">
+  <div id="menu">
     <h3>🥗 Меню дня</h3>
     <button onclick="order('Куриная грудка')">Куриная грудка — 350 ₽</button>
     <button onclick="order('Лосось с киноа')">Лосось с киноа — 450 ₽</button>
     <button onclick="order('Веганский бургер')">Веганский бургер — 300 ₽</button>
   </div>
 
-  <div id="quiz" style="display:none;">
+  <div id="quiz">
     <h3>📋 Анкета</h3>
-    <p>Есть ли аллергии?</p>
-    <input type="text" id="allergy" placeholder="Например: лактоза">
-    <p>Цель?</p>
+    <label>Есть ли аллергии?</label>
+    <input type="text" id="allergy" placeholder="Например: лактоза, глютен">
+    <label>Цель?</label>
     <select id="goal">
       <option>Похудеть</option>
       <option>Набрать мышцы</option>
@@ -72,17 +80,20 @@
     }
 
     function order(dish) {
-      Telegram.WebApp.sendData(JSON.stringify({ action: "order", dish: dish }));
+      Telegram.WebApp.sendData(JSON.stringify({
+        action: "order",
+        dish: dish
+      }));
       Telegram.WebApp.close();
     }
 
     function submitQuiz() {
       const allergy = document.getElementById('allergy').value || 'нет';
       const goal = document.getElementById('goal').value;
-      Telegram.WebApp.sendData(JSON.stringify({ 
-        action: "quiz", 
-        allergy: allergy, 
-        goal: goal 
+      Telegram.WebApp.sendData(JSON.stringify({
+        action: "quiz",
+        allergy: allergy,
+        goal: goal
       }));
       Telegram.WebApp.close();
     }
